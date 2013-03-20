@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 The CyanogenMod Project
+# Copyright (C) 2013 The CyanogenMod Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,16 +14,29 @@
 # limitations under the License.
 #
 
-# Include n80xx BoardConfigCommon
--include device/samsung/n80xx-common/BoardConfigCommon.mk
+# This variable is set first, so it can be overridden
+# by BoardConfigVendor.mk
 
-# Inline kernel building
-#FIXME NOT READY YET - NEEDS DEFCONFIG
+-include device/samsung/smdk4412-common/BoardCommonConfig.mk
+
+LOCAL_PATH := device/samsung/n8020
+
+# Bluetooth
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(LOCAL_PATH)/bluetooth
+BOARD_BLUEDROID_VENDOR_CONF := $(LOCAL_PATH)/bluetooth/vnd_n8020.txt
+
+# RIL
+COMMON_GLOBAL_CFLAGS += -DPROPERTY_PERMS_APPEND='{ "ril.ks.status", AID_SYSTEM, 0 },'
+
+# Camera
+COMMON_GLOBAL_CFLAGS += -DCAMERA_WITH_CITYID_PARAM
+
+# Kernel
 TARGET_KERNEL_SOURCE := kernel/samsung/smdk4412
 TARGET_KERNEL_CONFIG := cyanogenmod_n8020_defconfig
 
-#Bluetooth
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/samsung/n8020/bluetooth
-
 # assert
 TARGET_OTA_ASSERT_DEVICE := c0,p4notelte,p4noteltexx,n8020,GT-N8020
+
+# inherit from the proprietary version
+-include vendor/samsung/n8020/BoardConfigVendor.mk
